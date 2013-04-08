@@ -19,31 +19,33 @@ module Geokit
         url = "#{url}?#{query}"
         res = self.call_geocoder_service(url)
 
-        return GeoLoc.new if !res.is_a?(Net::HTTPSuccess)
+        geoloc = GeoLoc.new
+        geoloc.provider = 'Geocoder.us'
+
+        return geoloc if !res.is_a?(Net::HTTPSuccess)
         data = res.body
         logger.debug "Geocoder.us geocoding. Address: #{address}. Result: #{data}"
         array = data.chomp.split(',')
 
         if array.length == 5
-          res=GeoLoc.new
+          res = geoloc
           res.lat,res.lng,res.city,res.state,res.zip=array
           res.country_code='US'
           res.success=true
           return res
         elsif array.length == 6
-          res=GeoLoc.new
+          res = geoloc
           res.lat,res.lng,res.street_address,res.city,res.state,res.zip=array
           res.country_code='US'
           res.success=true
           return res
         else
           logger.info "geocoder.us was unable to geocode address: "+address
-          return GeoLoc.new
+          return geoloc
         end
-        rescue
-          logger.error "Caught an error during geocoder.us geocoding call: "+$!
-          return GeoLoc.new
-
+      rescue
+        logger.error "Caught an error during geocoder.us geocoding call: "+$!
+        return geoloc
       end
     end
  end
