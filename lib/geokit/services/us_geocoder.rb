@@ -40,11 +40,11 @@ module Geokit
           res.success=true
           return res
         else
-          logger.info "geocoder.us was unable to geocode address: "+address
+          logger.info "geocoder.us was unable to geocode address: #{address}"
           return geoloc
         end
       rescue
-        logger.error "Caught an error during geocoder.us geocoding call: "+$!
+        logger.error "Caught an error during geocoder.us geocoding call: #{$!}"
         return geoloc
       end
     end
